@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/style.css">
+  <title>Converx</title>
+</head>
+
+<body>
+  <header>
+    <h1>Converx</h1>
+    <p>
+      <em>The perfect currency converter</em>
+    </p>
+  </header>
+
+  <main>
+
+    <div class="main-content">
+      <div class="exchange-area">
+
+        <div class="change-from">
+          <p>NGN</p>
+          <input type="number" name="from" id="convert-from" placeholder="From">
+          <select name="currency" id="select-from">
+            <option value="NGN">NGN</option>
+          </select>
+        </div>
+
+        <button class="switch-currency">
+          <i class="fas fa-exchange-alt"></i>
+        </button>
+
+        <div class="change-to">
+          <p>USD</p>
+          <input type="number" name="to" id="convert-to" placeholder="To">
+          <select name="currency" id="select-to">
+            <option value="USD">USD</option>
+          </select>
+        </div>
+
+        <button class="favorite-btn" id=favorite-btn>
+          <i class="far fa-star"></i> Add to favorites</button>
+
+      </div>
+      <p class="last-update">
+        <i class="fas fa-exclamation-circle"></i>Last updated 10 mins ago...</p>
+      <!-- GRAPH -->
+      <div class="graph"></div>
+    </div>
+
+    <!-- FAVORITES CARD -->
+    <aside>
+      <h2>Favorites</h2>
+      <div id="favorites-box">
+
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <p>Built by Samakintunde</p>
+    <div class="social-icons">
+      <a href="https://github.com/samakintunde37">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://behance.net/samakaintund8a6">
+        <i class="fab fa-behance"></i>
+      </a>
+      <a href="https://twitter.com/samakintunde37">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- IDB -->
+  <script src="https://github.com/jakearchibald/idb/blob/master/lib/idb.js"></script>
+  <script src="./js/main.js "></script>
+</body>
+
+</html>

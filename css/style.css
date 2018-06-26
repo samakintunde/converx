@@ -1,0 +1,200 @@
+@import url("https://fonts.googleapis.com/css?family=Markazi+Text:700|Montserrat:400");
+
+:root {
+  --box-shadow: 0 1px 5px #00000088;
+  --box-margin: 2em;
+  --inner-padding: 1em;
+  --button: #f3f3f3;
+  --button-hover: #b46ae27c;
+}
+
+/* GENERAL */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
+  text-align: center;
+  display: grid;
+  grid-template-rows: 15% 75% 10%;
+  background: linear-gradient(to right, #bb77e6, #a94de2);
+}
+
+button:hover {
+  background-color: var(--button-hover);
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: #b46ae2;
+}
+
+/* HEADER */
+header {
+  margin-top: 1em;
+}
+
+header h1 {
+  font-family: "Markazi Text", serif;
+  font-size: 3em;
+  color: #ffffff;
+}
+
+/* MAIN CONTENT */
+main {
+  width: 80%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+main .main-content {
+  background-color: #ffffff;
+  border-radius: 0.25em;
+  margin: var(--box-margin);
+  padding: 2em;
+  box-shadow: var(--box-shadow);
+}
+
+/* EXCHANGE AREA CONTENT */
+main .exchange-area {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+main .exchange-area .change-from p,
+main .exchange-area .change-to p {
+  text-align: left;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+main .exchange-area .change-from input,
+main .exchange-area .change-to input {
+  font-weight: 600;
+  font-family: inherit;
+  height: 1.75em;
+  width: 10em;
+  font-size: 2em;
+  padding: 0 0.5em;
+  border-bottom: 2px solid #000000;
+  outline: none;
+}
+
+main .exchange-area .change-from input:focus,
+main .exchange-area .change-to input:focus {
+  color: #333333;
+}
+
+/* SWITCH CURRENCY ICON */
+button {
+  background: #b46ae2;
+  transition: 0.3s;
+}
+main .exchange-area .switch-currency {
+  box-shadow: var(--box-shadow);
+  border-radius: 50%;
+  margin: 1.5em;
+}
+
+main .exchange-area .fa-exchange-alt {
+  transform: rotateZ(90deg);
+  font-size: 1.75em;
+  color: #ffffff;
+  padding: 0.5em;
+}
+
+/* COUNTRY SELECT BOXES */
+main .exchange-area select {
+  font-family: inherit;
+  color: #b36ae2;
+  font-size: 1.5em;
+  height: 1.75em;
+  padding: 0 0.25em;
+  outline: none;
+  border-radius: 0 0.1em 0.1em 0;
+  background-color: var(--button);
+  transition: 0.3s;
+  /* -webkit-appearance: button; */
+}
+
+main .exchange-area select:hover {
+  background-color: var(--button-hover);
+  cursor: pointer;
+}
+
+/* ADD TO FAVORITE BUTTON */
+main .exchange-area .favorite-btn {
+  font-family: inherit;
+  color: #ffffff;
+  margin-top: var(--box-margin);
+  padding: 0.75em 1em;
+  box-shadow: var(--box-shadow);
+}
+
+main .main-content .last-update {
+  margin: 2em auto 0 auto;
+  padding: 0.5em;
+  background-color: #f3f3f3;
+  border-radius: 0.25em;
+  width: fit-content;
+}
+
+main .main-content .last-update i {
+  padding: 0 0.25em;
+  color: #db0b0b;
+}
+
+/* SIDEBAR */
+main aside {
+  background-color: #ffffff;
+  box-shadow: var(--box-shadow);
+  margin: var(--box-margin);
+}
+
+main aside h2 {
+  background-color: #f3f3f3;
+  padding: var(--inner-padding);
+}
+
+main aside div {
+  padding: var(--inner-padding);
+}
+
+main aside div .favorite-item {
+  background-color: var(--button);
+  margin: 0.1em;
+}
+
+main aside div .favorite-item:hover {
+  background-color: var(--button-hover);
+}
+
+footer p {
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+footer div {
+  padding: var(--inner-padding);
+}
+
+footer div a {
+  margin: 0 2em;
+}
+
+footer div a i {
+  font-size: 1em;
+  color: var(--button);
+  transition: 0.2s;
+}
+
+footer div a i:hover {
+  color: #edd6fc;
+  transform: scale(1.1);
+}
