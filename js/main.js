@@ -1,3 +1,19 @@
+// INITIALIZE VARIABLES
+// idb config
+const BASE_URL = 'https://free.currencyconverterapi.com/api/v5'
+const DB_NAME = 'converx-store'
+const DB_VERSION = 1
+
+// input nodes
+const inputFrom = document.getElementById('convert-from')
+const inputTo = document.getElementById('convert-to')
+const selectFrom = document.getElementById('select-from')
+const selectTo = document.getElementById('select-to')
+
+// select nodes(dropdown)
+let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
+let selectToVal = selectTo.options[selectTo.selectedIndex].text
+
 // INITIALIZE SERVICE WORKER
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -7,20 +23,6 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.console.error('An error occured: ', err))
   })
 }
-
-// INITALIZE INDEXEDDB
-// idb.open()
-
-// INITIALIZE VARIABLES
-const BASE_URL = 'https://free.currencyconverterapi.com/api/v5'
-
-const inputFrom = document.getElementById('convert-from')
-const inputTo = document.getElementById('convert-to')
-const selectFrom = document.getElementById('select-from')
-const selectTo = document.getElementById('select-to')
-
-let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
-let selectToVal = selectTo.options[selectTo.selectedIndex].text
 
 // GET CURRENCY DATA
 const currency = []
@@ -43,23 +45,42 @@ function loadCurrency () {
         currencyOption.setAttribute('value', id)
         currencyOption.innerText = id
         selectFrom.appendChild(currencyOption)
+        selectTo.appendChild(currencyOption)
       })
     })
 }
 
 // Getting Exchange rate
-
 function getConversion () {
   fetch(
     `${BASE_URL}/convert?q=${selectFromVal}_${selectToVal},${selectToVal}_${selectFromVal}`
   )
     .then(res => res.json())
-    .then(json => console.log(json))
+    .then(json => {
+      let fromRate = json.results[`${selectFromVal}_${selectToVal}`].val
+      let toRate = json.results[`${selectToVal}_${selectFromVal}`].val
+
+      // Check which input is focused to update the other as we type
+      if (inputFrom.focus) {
+        inputTo.value = fromRate * inputFrom.value
+        // Reset the value of the input field to placeholder
+        if (!inputFrom.value) {
+          inputTo.value = null
+        }
+        return null
+      } else if (inputTo.focus) {
+        inputFrom.value = toRate * inputTo.value
+      }
+      if (!inputTo.value) {
+        inputFrom.value = null
+      }
+    })
 }
 
 window.addEventListener('load', loadCurrency)
 
 inputFrom.addEventListener('input', getConversion)
+inputTo.addEventListener('input', getConversion)
 
 // CRUD favorites
 const favorites = []

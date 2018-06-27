@@ -4,8 +4,9 @@
   --box-shadow: 0 1px 5px #00000088;
   --box-margin: 2em;
   --inner-padding: 1em;
-  --button: #f3f3f3;
-  --button-hover: #b46ae27c;
+  --button: #555555;
+  --button-hover: #000000;
+  --border-radius: 0.25em;
 }
 
 /* GENERAL */
@@ -20,7 +21,8 @@ body {
   text-align: center;
   display: grid;
   grid-template-rows: 15% 75% 10%;
-  background: linear-gradient(to right, #bb77e6, #a94de2);
+  background: linear-gradient(to right, #7db4b5, #3f9496);
+  background-size: cover;
 }
 
 button:hover {
@@ -30,7 +32,6 @@ button:hover {
 
 a {
   text-decoration: none;
-  color: #b46ae2;
 }
 
 /* HEADER */
@@ -46,7 +47,6 @@ header h1 {
 
 /* MAIN CONTENT */
 main {
-  width: 80%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -54,7 +54,7 @@ main {
 
 main .main-content {
   background-color: #ffffff;
-  border-radius: 0.25em;
+  border-radius: var(--border-radius);
   margin: var(--box-margin);
   padding: 2em;
   box-shadow: var(--box-shadow);
@@ -72,6 +72,7 @@ main .exchange-area .change-to p {
   text-align: left;
   font-size: 0.75em;
   font-weight: 600;
+  color: #680148;
 }
 
 main .exchange-area .change-from input,
@@ -82,7 +83,7 @@ main .exchange-area .change-to input {
   width: 10em;
   font-size: 2em;
   padding: 0 0.5em;
-  border-bottom: 2px solid #000000;
+  border-bottom: 2px solid #680148;
   outline: none;
 }
 
@@ -93,7 +94,7 @@ main .exchange-area .change-to input:focus {
 
 /* SWITCH CURRENCY ICON */
 button {
-  background: #b46ae2;
+  background: #7db4b5;
   transition: 0.3s;
 }
 main .exchange-area .switch-currency {
@@ -112,19 +113,19 @@ main .exchange-area .fa-exchange-alt {
 /* COUNTRY SELECT BOXES */
 main .exchange-area select {
   font-family: inherit;
-  color: #b36ae2;
+  color: #ffffff;
   font-size: 1.5em;
   height: 1.75em;
   padding: 0 0.25em;
   outline: none;
   border-radius: 0 0.1em 0.1em 0;
-  background-color: var(--button);
+  background: var(--button);
   transition: 0.3s;
   /* -webkit-appearance: button; */
 }
 
 main .exchange-area select:hover {
-  background-color: var(--button-hover);
+  background: var(--button-hover);
   cursor: pointer;
 }
 
@@ -134,7 +135,14 @@ main .exchange-area .favorite-btn {
   color: #ffffff;
   margin-top: var(--box-margin);
   padding: 0.75em 1em;
+  border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+  transition: 0.5s color;
+  background: linear-gradient(to right, #7db4b5, #3f9496);
+}
+
+main .exchange-area .favorite-btn:hover {
+  background: linear-gradient(to right, #3f9496, #3f9496);
 }
 
 main .main-content .last-update {
@@ -155,19 +163,22 @@ main aside {
   background-color: #ffffff;
   box-shadow: var(--box-shadow);
   margin: var(--box-margin);
+  border-radius: var(--border-radius);
 }
 
 main aside h2 {
-  background-color: #f3f3f3;
-  padding: var(--inner-padding);
+  color: #ffffff;
+  background-color: #555555;
+  padding: 0.5em;
 }
 
 main aside div {
-  padding: var(--inner-padding);
+  padding: 0.5em;
+  color: #ffffff;
 }
 
 main aside div .favorite-item {
-  background-color: var(--button);
+  background-color: #7db4b5;
   margin: 0.1em;
 }
 
@@ -190,11 +201,29 @@ footer div a {
 
 footer div a i {
   font-size: 1em;
-  color: var(--button);
+  color: #ffffff;
   transition: 0.2s;
 }
 
 footer div a i:hover {
-  color: #edd6fc;
+  color: var(--button-hover);
   transform: scale(1.1);
+}
+
+@media (max-width: 900px) {
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    width: 99%;
+  }
+
+  main .exchange-area .change-from input,
+  main .exchange-area .change-to input {
+    width: 5em;
+  }
 }
