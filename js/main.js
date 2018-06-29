@@ -20,7 +20,13 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('./sw.js')
-      .then(reg => console.log('sw registered at: ', reg.scope))
+      .then(reg => {
+        if (!navigator.serviceWorker.controller) return
+        reg.addEventListener('updatefound', worker => {
+          console.log('hello')
+          worker.postMessage({ action: 'skipWaiting' })
+        })
+      })
       .catch(err => console.error('An error occured: ', err))
   })
 }
@@ -57,12 +63,21 @@ selectFrom.addEventListener('change', () => {
   let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
   let fromUnit = document.getElementById('fromUnit')
   fromUnit.innerText = selectFromVal
+  if (error.innerText) error.style.display = 'none'
 })
 
 selectTo.addEventListener('change', () => {
   let selectToVal = selectTo.options[selectTo.selectedIndex].text
   let toUnit = document.getElementById('toUnit')
   toUnit.innerText = selectToVal
+  if (error.innerText) error.style.display = 'none'
+})
+
+inputFrom.addEventListener('input', () => {
+  if (error.innerHTML) {
+    error.innerHTML = null
+    error.style.display = 'none'
+  }
 })
 
 // Getting Exchange rate
@@ -70,6 +85,13 @@ function getConversion () {
   // Getting select nodes(dropdown)
   let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
   let selectToVal = selectTo.options[selectTo.selectedIndex].text
+
+  if (inputFrom.value && (selectFromVal === 'From' || selectToVal === 'To')) {
+    error.innerHTML =
+      '<i class="fas fa-exclamation-circle"></i>Please, input number/select currencies'
+    error.style.display = 'block'
+    return
+  }
 
   fetch(
     `${BASE_URL}/convert?q=${selectFromVal}_${selectToVal},${selectToVal}_${selectFromVal}`
@@ -96,24 +118,30 @@ const favoritesNode = document.getElementById('favorites-box')
 
 // Displaying favorites
 favorites.forEach(favorite => {
-  let link = document.createElement('a')
-  link.setAttribute('href', '#')
-  link.innerHTML = `<div class="favorite-item">${favorite}</div>`
-  favoritesNode.appendChild(link)
+  let fav = document.createElement('div')
+  fav.style('cursor', 'pointer')
+  fav.innerHTML = `<div class="favorite-item">${favorite}</div>`
+  favoritesNode.appendChild(fav)
 })
 
 // Adding favorites
 function addFavorite () {
   selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
   selectToVal = selectTo.options[selectTo.selectedIndex].text
-  let newFav = `${selectFromVal} to ${selectToVal}`
+  let newFavText = `${selectFromVal} to ${selectToVal}`
 
-  favorites.push(newFav)
+  if (selectFromVal === 'From' || selectToVal === 'To') {
+    error.innerHTML =
+      '<i class="fas fa-exclamation-circle"></i>Please, select a currency'
+    error.style.display = 'block'
+    return
+  }
 
-  let newFavLink = document.createElement('a')
-  newFavLink.setAttribute('href', '#')
-  newFavLink.innerHTML = `<div class="favorite-item">${newFav}</div>`
-  favoritesNode.appendChild(newFavLink)
+  favorites.push(newFavText)
+
+  let newFav = document.createElement('div')
+  newFav.innerHTML = `<div class="favorite-item">${newFavText}</div>`
+  favoritesNode.appendChild(newFav)
 }
 
 favoriteBtn.addEventListener('click', addFavorite)

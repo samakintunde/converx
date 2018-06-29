@@ -25,7 +25,7 @@
       <div class="exchange-area">
 
         <div class="change-from">
-          <p id="fromUnit">NGN</p>
+          <p id="fromUnit"></p>
           <input type="number" name="from" id="convert-from" placeholder="Enter number here...">
           <div class="select">
             <select name="currency" id="select-from">
@@ -43,7 +43,7 @@
         </button>
 
         <div class="change-to">
-          <p id="toUnit">USD</p>
+          <p id="toUnit"></p>
           <div id="convert-to"></div>
         </div>
 
@@ -52,14 +52,17 @@
 
       </div>
       <p class="last-update" id="error">
-        <i class="fas fa-exclamation-circle"></i>Last updated 10 mins ago...</p>
+
+      </p>
       <!-- GRAPH -->
       <div class="graph"></div>
     </div>
 
     <!-- FAVORITES CARD -->
     <aside>
-      <h2>Favorites</h2>
+      <button id="accordion">
+        <h2>Favorites</h2>
+      </button>
       <div id="favorites-box">
 
       </div>

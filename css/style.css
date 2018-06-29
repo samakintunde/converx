@@ -8,6 +8,7 @@
   --button-hover: #000000;
   --border-radius: 0.25em;
   --gradient: linear-gradient(to right, #7db4b5, #3f9496);
+  --gradient-hover: linear-gradient(to right, #3f9496, #3f9496);
 }
 
 /* GENERAL */
@@ -142,6 +143,11 @@ main .exchange-area select:hover {
   cursor: pointer;
 }
 
+main .exchange-area #convert-to {
+  border-bottom: #680148;
+  width: 70%;
+}
+
 /* ADD TO FAVORITE BUTTON */
 main .exchange-area .favorite-btn {
   font-family: inherit;
@@ -155,15 +161,16 @@ main .exchange-area .favorite-btn {
 }
 
 main .exchange-area .favorite-btn:hover {
-  background: var(--gradient);
+  background: var(--gradient-hover);
 }
 
 main .main-content .last-update {
+  display: none;
   margin: 2em auto 0 auto;
   padding: 0.5em;
   background-color: #f3f3f3;
   border-radius: 0.25em;
-  width: fit-content;
+  max-width: 99%;
 }
 
 main .main-content .last-update i {
@@ -173,30 +180,38 @@ main .main-content .last-update i {
 
 /* SIDEBAR */
 main aside {
+  position: relative;
   background-color: #ffffff;
   box-shadow: var(--box-shadow);
   margin: var(--box-margin);
   border-radius: var(--border-radius);
 }
 
-main aside h2 {
+main aside button {
+  top: 0;
+  cursor: pointer;
+  background-color: #000000;
+  width: 100%;
+  font-family: inherit;
   color: #ffffff;
-  background-color: #555555;
+}
+
+main aside h2 {
   padding: 0.5em;
 }
 
 main aside div {
-  padding: 0.5em;
-  color: #ffffff;
+  padding: 0.25em 0.5em;
 }
 
 main aside div .favorite-item {
   background: var(--gradient);
-  margin: 0.1em;
+  color: #ffffff;
+  cursor: pointer;
 }
 
 main aside div .favorite-item:hover {
-  background-color: var(--button-hover);
+  background: var(--gradient-hover);
 }
 
 footer p {
