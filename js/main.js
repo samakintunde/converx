@@ -2,7 +2,7 @@ window.addEventListener('load', loadCurrency)
 // INITIALIZE VARIABLES
 // idb config
 const BASE_URL = 'https://free.currencyconverterapi.com/api/v5'
-const DB_NAME = 'converx-store'
+const DB_NAME = 'converx'
 const DB_VERSION = 1
 
 // Getting input nodes
@@ -14,6 +14,19 @@ const error = document.getElementById('error')
 
 // Setting focus to input
 inputFrom.focus()
+
+// INITIALIZE IndexedDB
+function openDb () {
+  if (!navigator.serviceWorker) {
+    return Promise.resolve()
+  }
+
+  return idb.open(DB_NAME, DB_VERSION, upgradeDb => {
+    let store = upgradeDb.createObjectStore('currencies')
+  })
+}
+
+let dbPromise = openDb()
 
 // INITIALIZE SERVICE WORKER
 if ('serviceWorker' in navigator) {
@@ -74,6 +87,10 @@ selectTo.addEventListener('change', () => {
 })
 
 inputFrom.addEventListener('input', () => {
+  // Clear the converted currency while editing
+  if (inputFrom.innerText === '') inputTo.innerHTML = null
+
+  // Clear error while editing
   if (error.innerHTML) {
     error.innerHTML = null
     error.style.display = 'none'
@@ -93,16 +110,22 @@ function getConversion () {
     return
   }
 
-  fetch(
-    `${BASE_URL}/convert?q=${selectFromVal}_${selectToVal},${selectToVal}_${selectFromVal}`
-  )
+  fetch(`${BASE_URL}/convert?q=${selectFromVal}_${selectToVal}`)
     .then(res => res.json())
     .then(json => {
-      let fromRate = json.results[`${selectFromVal}_${selectToVal}`].val
-      let toRate = json.results[`${selectToVal}_${selectFromVal}`].val
+      let rate = json.results[`${selectFromVal}_${selectToVal}`].val
 
-      inputTo.innerText = fromRate * inputFrom.value
-      // Reset the value of the input field to placeholder
+      inputTo.innerText = rate * inputFrom.value
+      return rate
+    })
+    // Adding rates to IndexeDB
+    .then(rate => {
+      dbPromise.then(db => {
+        let tx = db.transaction('currencies', 'readwrite')
+        let store = tx.objectStore('currencies')
+        store.put(rate, `${selectFromVal}_${selectToVal}`)
+        return tx.complete
+      })
     })
 }
 
@@ -126,8 +149,8 @@ favorites.forEach(favorite => {
 
 // Adding favorites
 function addFavorite () {
-  selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
-  selectToVal = selectTo.options[selectTo.selectedIndex].text
+  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
+  let selectToVal = selectTo.options[selectTo.selectedIndex].text
   let newFavText = `${selectFromVal} to ${selectToVal}`
 
   if (selectFromVal === 'From' || selectToVal === 'To') {
