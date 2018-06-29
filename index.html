@@ -25,30 +25,33 @@
       <div class="exchange-area">
 
         <div class="change-from">
-          <p>NGN</p>
-          <input type="number" name="from" id="convert-from" placeholder="From">
-          <select name="currency" id="select-from" item-height="10">
-            <option value="NGN">NGN</option>
-          </select>
+          <p id="fromUnit">NGN</p>
+          <input type="number" name="from" id="convert-from" placeholder="Enter number here...">
+          <div class="select">
+            <select name="currency" id="select-from">
+              <option value="NGN">From</option>
+            </select>
+            <i class="fas fa-arrow-right"></i>
+            <select name="currency" id="select-to">
+              <option value="USD">To</option>
+            </select>
+          </div>
         </div>
 
-        <button class="switch-currency">
+        <button class="switch-currency" id="convert">
           <i class="fas fa-exchange-alt"></i>
         </button>
 
         <div class="change-to">
-          <p>USD</p>
-          <input type="number" name="to" id="convert-to" placeholder="To">
-          <select name="currency" id="select-to" item-height="10">
-            <option value="USD">USD</option>
-          </select>
+          <p id="toUnit">USD</p>
+          <div id="convert-to"></div>
         </div>
 
         <button class="favorite-btn" id=favorite-btn>
           <i class="far fa-star"></i> Add to favorites</button>
 
       </div>
-      <p class="last-update">
+      <p class="last-update" id="error">
         <i class="fas fa-exclamation-circle"></i>Last updated 10 mins ago...</p>
       <!-- GRAPH -->
       <div class="graph"></div>
