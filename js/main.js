@@ -1,8 +1,6 @@
 window.addEventListener("load", () => {
   // Load currencies to select tag
   loadCurrency();
-  // Display favorites on page load
-  displayFavorite();
 });
 // INITIALIZE VARIABLES
 // idb config
@@ -91,7 +89,7 @@ function loadCurrency() {
 
 inputFrom.addEventListener("input", () => {
   // Clear the converted currency while editing
-  if (inputFrom.innerText === "") {
+  if (inputFrom.innerText === "" || !inputFrom.innerText) {
     inputTo.innerHTML = null;
     return;
   }
@@ -176,85 +174,3 @@ function getConversion() {
 const convertBtn = document.getElementById("convert");
 
 convertBtn.addEventListener("click", getConversion);
-
-// CRUD favorites
-const favoriteBtn = document.getElementById("favorite-btn");
-const favoritesNode = document.getElementById("favorites-box");
-
-// DISPLAY FAVORITE
-function displayFavorite(newFavText) {
-  dbPromise
-    .then(db => {
-      let tx = db.transaction("favorites");
-      let store = tx.objectStore("favorites");
-      return store.openCursor();
-    })
-    .then(function renderFavorite(cursor) {
-      if (!cursor) return;
-      let fav = document.createElement("div");
-      fav.style.cursor = "pointer";
-      fav.innerHTML = `<div class="favorite-item">${cursor.value}</div>`;
-      favoritesNode.appendChild(fav);
-
-      return cursor.continue().then(renderFavorite);
-    });
-}
-
-// ADD FAVORITE
-function addFavorite() {
-  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
-  let selectToVal = selectTo.options[selectTo.selectedIndex].text;
-  let newFavText = `${selectFromVal} to ${selectToVal}`;
-
-  dbPromise
-    .then(db => {
-      let tx = db.transaction("favorites", "readwrite");
-      let store = tx.objectStore("favorites");
-      store.put(newFavText, newFavText);
-      return tx.complete;
-    })
-    .then(result => {
-      displayFavorite(newFavText);
-    });
-}
-
-// DELETE FAVORITE
-function deleteFavorite() {
-  console.log("clicked");
-  dbPromise
-    .then(db => {
-      let tx = db.transaction("favorites", "readwrite");
-      let store = tx.objectStore("favorites");
-      return store.openCursor();
-    })
-    .then(function renderFavorite(cursor) {
-      if (!cursor) return;
-      if (cursor.value === favoriteItem.innerText) {
-        cursor.delete();
-        return;
-      }
-      return cursor.continue().then(renderFavorite);
-    })
-    .then(displayFavorite());
-}
-
-// Load favorite to replace select when clicked
-function loadFavorite() {
-  dbPromise
-    .then(db => {
-      let store = db.transaction.objectStore("favorites");
-      return store.openCursor();
-    })
-    .then(cursor => {
-      if (!cursor) return;
-      if (cursor.value === favoriteItem.innerText) {
-      }
-    });
-}
-
-// Save individual favorites to a variable
-let favoriteItems = document.querySelectorAll(".favorite-item");
-
-console.log(favoriteItems);
-
-favoriteBtn.addEventListener("click", addFavorite);
