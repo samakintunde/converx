@@ -1,4 +1,4 @@
-let CACHE_NAME = "converx-v1.5";
+let CACHE_NAME = "converx-v3.1";
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -7,10 +7,10 @@ self.addEventListener("install", event => {
         "https://use.fontawesome.com/releases/v5.1.0/css/all.css",
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff",
         "https://fonts.googleapis.com/css?family=Markazi+Text:700|Montserrat:400",
-        "index.html",
-        "css/style.css",
-        "js/main.js",
-        "/assets/icons-512.png"
+        "./index.html",
+        "./css/style.css",
+        "./js/main.js",
+        "./assets/icons-512.png"
       ]);
     })
   );
@@ -36,12 +36,17 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  var requestUrl = new URL(event.request.url);
+
+  if (requestUrl.origin === location.origin) {
+    if (requestUrl.pathname === "/") {
+      event.respondWith(caches.match("/index.html"));
+      return;
+    }
+  }
   event.respondWith(
-    caches.match(event.request).then(function(response) {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request);
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
     })
   );
 });
