@@ -68,7 +68,7 @@ function loadCurrency() {
     let store = tx.objectStore("currencies");
     store.get("currency").then(result => {
       // Check if the currencies store is in DB
-      if (result) {
+      if (!result) {
         fetch(`${BASE_URL}/currencies`)
           .then(res => res.json())
           .then(json => {
