@@ -31,7 +31,7 @@ function openDb() {
       case 0:
         upgradeDb.createObjectStore("rates");
         upgradeDb.createObjectStore("currencies");
-        upgradeDb.createObjectStore("favorites");
+        // upgradeDb.createObjectStore("favorites"); (Feature to be added later)
         break;
     }
   });

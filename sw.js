@@ -1,4 +1,4 @@
-let CACHE_NAME = "converx-v2.3";
+let CACHE_NAME = "converx-v1.5";
 
 self.addEventListener("install", event => {
   event.waitUntil(
