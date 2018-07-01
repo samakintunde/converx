@@ -1,4 +1,4 @@
-let CACHE_NAME = "converx-v2.1";
+let CACHE_NAME = "converx-v2.3";
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -38,7 +38,10 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
+      if (response) {
+        return response;
+      }
+      return fetch(event.request);
     })
   );
 });

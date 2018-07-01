@@ -17,6 +17,8 @@ const selectFrom = document.getElementById("select-from");
 const selectTo = document.getElementById("select-to");
 const error = document.getElementById("error");
 
+console.log(inputFrom.value);
+
 // Setting focus to input
 inputFrom.focus();
 
@@ -42,12 +44,7 @@ let dbPromise = openDb();
 // INITIALIZE SERVICE WORKER
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("./sw.js")
-      .then(reg => {
-        console.log("Service Worker registered -", reg);
-      })
-      .catch(err => console.error("An error occured: ", err));
+    navigator.serviceWorker.register("./sw.js");
   });
 }
 
@@ -106,21 +103,26 @@ inputFrom.addEventListener("input", () => {
   }
 });
 
-function setUnit(select, id) {
+function setUnit() {
   let value = select.options[select.selectedIndex].text;
-  console.log(selectVal);
+  console.log(value);
   let id = document.getElementById(id);
   console.log(id);
   unit.innerText = value;
 }
 
-selectFrom.addEventListener("input", setUnit(selectFrom, "fromUnit"));
+selectFrom.addEventListener("input", () => {
+  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
+  unit.innerText = value;
+});
 
-selectTo.addEventListener("input", setUnit(selectTo, "toUnit"));
+selectTo.addEventListener("input", () => {
+  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
+  unit.innerText = value;
+});
 
 // Getting Exchange rate
 function getConversion() {
-  console.log("clicked");
   // Getting select nodes(dropdown)
   let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
   let selectToVal = selectTo.options[selectTo.selectedIndex].text;
@@ -158,12 +160,14 @@ function getConversion() {
         })
         // Adding rates to IndexeDB
         .then(rate => {
-          dbPromise.then(db => {
-            let tx = db.transaction("rates", "readwrite");
-            let store = tx.objectStore("rates");
-            store.put(rate, `${selectFromVal}_${selectToVal}`);
-            return tx.complete;
-          });
+          dbPromise
+            .then(db => {
+              let tx = db.transaction("rates", "readwrite");
+              let store = tx.objectStore("rates");
+              store.put(rate, `${selectFromVal}_${selectToVal}`);
+              return tx.complete;
+            })
+            .then(result => console.log("done"));
         });
     });
   });
@@ -171,7 +175,7 @@ function getConversion() {
 
 const convertBtn = document.getElementById("convert");
 
-convertBtn.addEventListener("click", () => console.log("clicked"));
+convertBtn.addEventListener("click", getConversion);
 
 // CRUD favorites
 const favoriteBtn = document.getElementById("favorite-btn");
