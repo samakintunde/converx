@@ -4,7 +4,7 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       cache.addAll([
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
+        "https://use.fontawesome.com/releases/v5.1.0/css/all.css",
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/fonts/fontawesome-webfont.woff",
         "https://fonts.googleapis.com/css?family=Markazi+Text:700|Montserrat:400",
         "./index.html",
