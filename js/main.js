@@ -101,22 +101,16 @@ inputFrom.addEventListener("input", () => {
   }
 });
 
-function setUnit() {
-  let value = select.options[select.selectedIndex].text;
-  console.log(value);
-  let id = document.getElementById(id);
-  console.log(id);
-  unit.innerText = value;
-}
-
 selectFrom.addEventListener("input", () => {
   let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
-  unit.innerText = value;
+  let unit = document.getElementById("fromUnit");
+  unit.innerText = selectFromVal;
 });
 
 selectTo.addEventListener("input", () => {
-  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
-  unit.innerText = value;
+  let selectFromVal = selectTo.options[selectTo.selectedIndex].text;
+  let unit = document.getElementById("toUnit");
+  unit.innerText = selectFromVal;
 });
 
 // Getting Exchange rate

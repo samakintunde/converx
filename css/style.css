@@ -27,11 +27,6 @@ body {
   flex-direction: column;
 }
 
-button:hover {
-  background-color: var(--button-hover);
-  cursor: pointer;
-}
-
 a {
   text-decoration: none;
 }
@@ -109,9 +104,15 @@ main .exchange-area .change-to div {
 
 /* SWITCH CURRENCY ICON */
 button {
-  background: #7db4b5;
+  background: #680148;
   transition: 0.3s;
 }
+
+button:hover {
+  background: var(--gradient-hover);
+  cursor: pointer;
+}
+
 main .exchange-area .switch-currency {
   width: fit-content;
   box-shadow: var(--box-shadow);
@@ -155,6 +156,7 @@ main .exchange-area select:hover {
 main .exchange-area .change-to #convert-to {
   border-bottom: #680148;
   width: 70%;
+  margin: 0 auto;
 }
 
 main .main-content .last-update {
