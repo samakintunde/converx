@@ -5,9 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="author" content="Samakintunde">
+  <meta name="theme-color" content="#3F9496">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="shortcut icon" href="/assets/icons-512.png" type="image/png">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
     crossorigin="anonymous">
   <link rel="stylesheet" href="./css/style.css">
+
   <title>Converx</title>
 </head>
 
@@ -20,53 +25,41 @@
   </header>
 
   <main>
+    <div class="main-div">
 
-    <div class="main-content">
-      <div class="exchange-area">
+      <div class="main-content">
+        <div class="exchange-area">
 
-        <div class="change-from">
-          <p id="fromUnit"></p>
-          <input type="number" name="from" id="convert-from" placeholder="Enter number here...">
-          <div class="select">
-            <select name="currency" id="select-from">
-              <option value="NGN">From</option>
-            </select>
-            <i class="fas fa-arrow-right"></i>
-            <select name="currency" id="select-to">
-              <option value="USD">To</option>
-            </select>
+          <div class="change-from">
+            <p id="fromUnit"></p>
+            <input type="number" name="from" id="convert-from" placeholder="Enter number here...">
+            <div class="select">
+              <select name="currency" id="select-from">
+              </select>
+              <i class="fas fa-arrow-right"></i>
+              <select name="currency" id="select-to">
+              </select>
+            </div>
           </div>
+
+          <button class="switch-currency" id="convert">
+            <i class="fas fa-exchange-alt"></i>
+          </button>
+
+          <div class="change-to">
+            <p id="toUnit"></p>
+            <div id="convert-to"></div>
+          </div>
+
         </div>
+        <p class="last-update" id="error">
 
-        <button class="switch-currency" id="convert">
-          <i class="fas fa-exchange-alt"></i>
-        </button>
-
-        <div class="change-to">
-          <p id="toUnit"></p>
-          <div id="convert-to"></div>
-        </div>
-
-        <button class="favorite-btn" id=favorite-btn>
-          <i class="far fa-star"></i> Add to favorites</button>
-
+        </p>
+        <!-- GRAPH -->
+        <div class="graph"></div>
       </div>
-      <p class="last-update" id="error">
-
-      </p>
-      <!-- GRAPH -->
-      <div class="graph"></div>
     </div>
 
-    <!-- FAVORITES CARD -->
-    <aside>
-      <button id="accordion">
-        <h2>Favorites</h2>
-      </button>
-      <div id="favorites-box">
-
-      </div>
-    </aside>
   </main>
 
   <footer>
@@ -85,7 +78,8 @@
   </footer>
 
   <!-- IDB -->
-  <script src="https://github.com/jakearchibald/idb/blob/master/lib/idb.js"></script>
+
+  <script src="./js/idb.js"></script>
   <script src="./js/main.js "></script>
 </body>
 

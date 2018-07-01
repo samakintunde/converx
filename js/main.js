@@ -1,147 +1,170 @@
-window.addEventListener('load', loadCurrency)
+window.addEventListener("load", () => {
+  // Load currencies to select tag
+  loadCurrency();
+});
 // INITIALIZE VARIABLES
 // idb config
-const BASE_URL = 'https://free.currencyconverterapi.com/api/v5'
-const DB_NAME = 'converx-store'
-const DB_VERSION = 1
+const BASE_URL = "https://free.currencyconverterapi.com/api/v5";
+const DB_NAME = "converx";
+const DB_VERSION = 1;
 
 // Getting input nodes
-const inputFrom = document.getElementById('convert-from')
-const inputTo = document.getElementById('convert-to')
-const selectFrom = document.getElementById('select-from')
-const selectTo = document.getElementById('select-to')
-const error = document.getElementById('error')
+const inputFrom = document.getElementById("convert-from");
+const inputTo = document.getElementById("convert-to");
+const selectFrom = document.getElementById("select-from");
+const selectTo = document.getElementById("select-to");
+const error = document.getElementById("error");
+
+console.log(inputFrom.value);
 
 // Setting focus to input
-inputFrom.focus()
+inputFrom.focus();
+
+// INITIALIZE IndexedDB
+function openDb() {
+  if (!navigator.serviceWorker) {
+    return Promise.resolve();
+  }
+
+  return idb.open(DB_NAME, DB_VERSION, upgradeDb => {
+    switch (upgradeDb.oldVersion) {
+      case 0:
+        upgradeDb.createObjectStore("rates");
+        upgradeDb.createObjectStore("currencies");
+        // upgradeDb.createObjectStore("favorites"); (Feature to be added later)
+        break;
+    }
+  });
+}
+
+let dbPromise = openDb();
 
 // INITIALIZE SERVICE WORKER
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('./sw.js')
-      .then(reg => {
-        if (!navigator.serviceWorker.controller) return
-        reg.addEventListener('updatefound', worker => {
-          console.log('hello')
-          worker.postMessage({ action: 'skipWaiting' })
-        })
-      })
-      .catch(err => console.error('An error occured: ', err))
-  })
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js");
+  });
 }
 
 // GET CURRENCY DATA
-const currency = []
+const currency = [];
 
-function loadCurrency () {
-  fetch(`${BASE_URL}/currencies`)
-    .then(res => res.json())
-    .then(json => {
-      for (let id in json.results) {
-        if (currency.includes(id)) {
-          return
-        }
-        currency.push(id)
-      }
-      return currency
-    })
-    .then(currency => {
-      currency.sort().forEach(id => {
-        let currencyOption = document.createElement('option')
-        currencyOption.setAttribute('value', id)
-        currencyOption.innerText = id
-        // Duplicate the options to use in the two selects
-        let currencyOptionClone = currencyOption.cloneNode(true)
-        selectFrom.appendChild(currencyOption)
-        selectTo.appendChild(currencyOptionClone)
-      })
-    })
+function displayCurrency(currency) {
+  currency.sort().forEach(id => {
+    let currencyOption = document.createElement("option");
+    currencyOption.setAttribute("value", id);
+    currencyOption.innerText = id;
+    // Duplicate the options to use in the two selects
+    let currencyOptionClone = currencyOption.cloneNode(true);
+    selectFrom.appendChild(currencyOption);
+    selectTo.appendChild(currencyOptionClone);
+  });
 }
 
-selectFrom.addEventListener('change', () => {
-  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
-  let fromUnit = document.getElementById('fromUnit')
-  fromUnit.innerText = selectFromVal
-  if (error.innerText) error.style.display = 'none'
-})
+// LOAD CURRENCIES TO SELECT ON PAGE LOAD
+function loadCurrency() {
+  dbPromise.then(db => {
+    let tx = db.transaction("currencies");
+    let store = tx.objectStore("currencies");
+    store.get("currency").then(result => {
+      // Check if the currencies store is in DB
+      if (result) {
+        fetch(`${BASE_URL}/currencies`)
+          .then(res => res.json())
+          .then(json => {
+            for (let id in json.results) {
+              if (!currency.includes(id)) currency.push(id);
+            }
+            return currency;
+          })
+          .then(currency => displayCurrency(result))
+          .catch(err => {
+            if (err) console.error(err);
+          });
+      }
+      displayCurrency(result);
+    });
+  });
+}
 
-selectTo.addEventListener('change', () => {
-  let selectToVal = selectTo.options[selectTo.selectedIndex].text
-  let toUnit = document.getElementById('toUnit')
-  toUnit.innerText = selectToVal
-  if (error.innerText) error.style.display = 'none'
-})
-
-inputFrom.addEventListener('input', () => {
-  if (error.innerHTML) {
-    error.innerHTML = null
-    error.style.display = 'none'
+inputFrom.addEventListener("input", () => {
+  // Clear the converted currency while editing
+  if (inputFrom.innerText === "" || !inputFrom.innerText) {
+    inputTo.innerHTML = null;
+    return;
   }
-})
+
+  // Clear error while editing
+  if (error.innerHTML) {
+    error.innerHTML = null;
+    error.style.display = "none";
+  }
+});
+
+selectFrom.addEventListener("input", () => {
+  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
+  let unit = document.getElementById("fromUnit");
+  unit.innerText = selectFromVal;
+});
+
+selectTo.addEventListener("input", () => {
+  let selectFromVal = selectTo.options[selectTo.selectedIndex].text;
+  let unit = document.getElementById("toUnit");
+  unit.innerText = selectFromVal;
+});
 
 // Getting Exchange rate
-function getConversion () {
+function getConversion() {
   // Getting select nodes(dropdown)
-  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
-  let selectToVal = selectTo.options[selectTo.selectedIndex].text
+  let selectFromVal = selectFrom.options[selectFrom.selectedIndex].text;
+  let selectToVal = selectTo.options[selectTo.selectedIndex].text;
 
-  if (inputFrom.value && (selectFromVal === 'From' || selectToVal === 'To')) {
+  let query = `${selectFromVal}_${selectToVal}`;
+
+  if (!inputFrom.value) {
     error.innerHTML =
-      '<i class="fas fa-exclamation-circle"></i>Please, input number/select currencies'
-    error.style.display = 'block'
-    return
+      '<i class="fas fa-exclamation-circle"></i>Please, input number';
+    error.style.display = "block";
+    return;
   }
 
-  fetch(
-    `${BASE_URL}/convert?q=${selectFromVal}_${selectToVal},${selectToVal}_${selectFromVal}`
-  )
-    .then(res => res.json())
-    .then(json => {
-      let fromRate = json.results[`${selectFromVal}_${selectToVal}`].val
-      let toRate = json.results[`${selectToVal}_${selectFromVal}`].val
-
-      inputTo.innerText = fromRate * inputFrom.value
-      // Reset the value of the input field to placeholder
-    })
+  dbPromise.then(db => {
+    let tx = db.transaction("rates", "readwrite");
+    let store = tx.objectStore("rates");
+    if (selectFromVal === selectToVal) {
+      inputTo.innerText = 1 * inputFrom.value;
+      return;
+    }
+    console.log(store.get(query));
+    store.get(query).then(rate => {
+      // Check if rate exists in the store and use it
+      if (rate) {
+        inputTo.innerText = rate * inputFrom.value;
+        return;
+      }
+      // Fetch if the rate isn't available
+      fetch(`${BASE_URL}/convert?q=${selectFromVal}_${selectToVal}`)
+        .then(res => res.json())
+        .then(json => {
+          rate = json.results[`${selectFromVal}_${selectToVal}`].val;
+          inputTo.innerText = rate * inputFrom.value;
+          return rate;
+        })
+        // Adding rates to IndexeDB
+        .then(rate => {
+          dbPromise
+            .then(db => {
+              let tx = db.transaction("rates", "readwrite");
+              let store = tx.objectStore("rates");
+              store.put(rate, `${selectFromVal}_${selectToVal}`);
+              return tx.complete;
+            })
+            .then(result => console.log("done"));
+        });
+    });
+  });
 }
 
-const convertBtn = document.getElementById('convert')
+const convertBtn = document.getElementById("convert");
 
-convertBtn.addEventListener('click', getConversion)
-
-// CRUD favorites
-const favorites = []
-const favoriteBtn = document.getElementById('favorite-btn')
-
-const favoritesNode = document.getElementById('favorites-box')
-
-// Displaying favorites
-favorites.forEach(favorite => {
-  let fav = document.createElement('div')
-  fav.style('cursor', 'pointer')
-  fav.innerHTML = `<div class="favorite-item">${favorite}</div>`
-  favoritesNode.appendChild(fav)
-})
-
-// Adding favorites
-function addFavorite () {
-  selectFromVal = selectFrom.options[selectFrom.selectedIndex].text
-  selectToVal = selectTo.options[selectTo.selectedIndex].text
-  let newFavText = `${selectFromVal} to ${selectToVal}`
-
-  if (selectFromVal === 'From' || selectToVal === 'To') {
-    error.innerHTML =
-      '<i class="fas fa-exclamation-circle"></i>Please, select a currency'
-    error.style.display = 'block'
-    return
-  }
-
-  favorites.push(newFavText)
-
-  let newFav = document.createElement('div')
-  newFav.innerHTML = `<div class="favorite-item">${newFavText}</div>`
-  favoritesNode.appendChild(newFav)
-}
-
-favoriteBtn.addEventListener('click', addFavorite)
+convertBtn.addEventListener("click", getConversion);
