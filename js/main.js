@@ -15,8 +15,6 @@ const selectFrom = document.getElementById("select-from");
 const selectTo = document.getElementById("select-to");
 const error = document.getElementById("error");
 
-console.log(inputFrom.value);
-
 // Setting focus to input
 inputFrom.focus();
 
@@ -67,8 +65,9 @@ function loadCurrency() {
     let tx = db.transaction("currencies");
     let store = tx.objectStore("currencies");
     store.get("currency").then(result => {
+      // console.log(result);
       // Check if the currencies store is in DB
-      if (!result) {
+      if (typeof result === "undefined") {
         fetch(`${BASE_URL}/currencies`)
           .then(res => res.json())
           .then(json => {
@@ -77,7 +76,15 @@ function loadCurrency() {
             }
             return currency;
           })
-          .then(currency => displayCurrency(result))
+          .then(currency => {
+            dbPromise.then(db => {
+              let tx = db.transaction("currencies", "readwrite");
+              let store = tx.objectStore("currencies");
+              store.put(currency, "currency");
+              displayCurrency(currency);
+              return tx.complete;
+            });
+          })
           .catch(err => {
             if (err) console.error(err);
           });
@@ -135,7 +142,6 @@ function getConversion() {
       inputTo.innerText = 1 * inputFrom.value;
       return;
     }
-    console.log(store.get(query));
     store.get(query).then(rate => {
       // Check if rate exists in the store and use it
       if (rate) {
